@@ -181,10 +181,17 @@ export default function DashboardTable() {
 
     useEffect(() => {
         fetchCalls();
+
+        // Poll every 10 seconds
+        const interval = setInterval(() => {
+            fetchCalls(true);
+        }, 10000);
+
+        return () => clearInterval(interval);
     }, [search]);
 
-    const fetchCalls = async () => {
-        setIsLoading(true);
+    const fetchCalls = async (silent = false) => {
+        if (!silent) setIsLoading(true);
         try {
             const res = await fetch(`/api/calls?search=${search}`, { cache: 'no-store' });
             if (!res.ok) throw new Error('Failed to fetch');
