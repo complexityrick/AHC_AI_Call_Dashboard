@@ -141,7 +141,9 @@ function TranscriptModal({ isOpen, onClose, text }: { isOpen: boolean; onClose: 
                                 </button>
                             </div>
                             <div className="p-6 overflow-y-auto custom-scrollbar text-slate-300 leading-relaxed whitespace-pre-wrap">
-                                {text || "No transcript text available."}
+                                {(text || "No transcript text available.")
+                                    .replace(/AI:/g, "Assistant:")
+                                    .replace(/User:/g, "Caller:")}
                             </div>
                             <div className="p-4 border-t border-slate-700 bg-slate-800/30 flex justify-end">
                                 <button
