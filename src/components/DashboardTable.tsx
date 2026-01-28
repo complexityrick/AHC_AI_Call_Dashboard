@@ -276,14 +276,14 @@ export default function DashboardTable() {
             </div>
 
             {/* Table */}
-            <div className="glass-panel rounded-xl overflow-hidden overflow-x-auto min-h-[500px]">
+            <div className="glass-panel rounded-xl overflow-hidden overflow-x-auto overflow-y-auto max-h-[75vh]">
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
                 >
                     <table className="min-w-full divide-y divide-slate-700">
-                        <thead className="bg-slate-800/50">
+                        <thead className="bg-slate-900 sticky top-0 z-10 shadow-md">
                             <tr className="divide-x divide-slate-700">
                                 <SortableContext
                                     items={columns.map(c => c.id)}
