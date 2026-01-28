@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Call {
+  id                  String   @id @default(uuid())
+  vapiCallId          String   @unique
+  phoneNumber         String
+  callerName          String?
+  callerType          String?
+  callIntent          String?
+  clinic              String?
+  location            String?
+  provider            String?
+  urgency             String?
+  transferDestination String?
+  followUpNeeded      Boolean  @default(true)
+  actionsStatus       String   @default("Pending") // Pending, Resolved
+  rating              Int?
+  notes               String?
+  transcriptUrl       String?
+  transcriptText      String?
+  addressed           Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
