@@ -1,6 +1,26 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardTable from '@/components/DashboardTable';
 
 export default function DashboardPage() {
+    const router = useRouter();
+    const [isAuthorized, setIsAuthorized] = useState(false);
+
+    useEffect(() => {
+        const loggedIn = localStorage.getItem('isLoggedIn');
+        if (!loggedIn) {
+            router.push('/login');
+        } else {
+            setIsAuthorized(true);
+        }
+    }, []);
+
+    if (!isAuthorized) {
+        return <div className="min-h-screen flex items-center justify-center text-slate-500">Verifying access...</div>;
+    }
+
     return (
         <main className="min-h-screen p-2 bg-cover bg-center">
             <div className="w-full px-4 space-y-8">
