@@ -140,10 +140,49 @@ function TranscriptModal({ isOpen, onClose, text }: { isOpen: boolean; onClose: 
                                     <X size={20} />
                                 </button>
                             </div>
-                            <div className="p-6 overflow-y-auto custom-scrollbar text-slate-300 leading-relaxed whitespace-pre-wrap">
+                            <div className="p-6 overflow-y-auto custom-scrollbar flex flex-col gap-3">
                                 {(text || "No transcript text available.")
-                                    .replace(/AI:/g, "Assistant:")
-                                    .replace(/User:/g, "Caller:")}
+                                    .split(/(?=AI:|User:)/g)
+                                    .reduce((acc: { speaker: string; text: string }[], chunk) => {
+                                        const cleanChunk = chunk.trim();
+                                        if (!cleanChunk) return acc;
+
+                                        let speaker = 'System';
+                                        let content = cleanChunk;
+
+                                        if (cleanChunk.startsWith('AI:')) {
+                                            speaker = 'Assistant';
+                                            content = cleanChunk.replace('AI:', '').trim();
+                                        } else if (cleanChunk.startsWith('User:')) {
+                                            speaker = 'Caller';
+                                            content = cleanChunk.replace('User:', '').trim();
+                                        }
+
+                                        // Merge if same speaker continues (optional, but good for rendering)
+                                        acc.push({ speaker, text: content });
+                                        return acc;
+                                    }, [])
+                                    .map((msg, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`flex flex-col max-w-[80%] ${msg.speaker === 'Caller'
+                                                    ? 'self-end items-end'
+                                                    : 'self-start items-start'
+                                                }`}
+                                        >
+                                            <span className="text-[10px] text-slate-500 mb-1 px-1">
+                                                {msg.speaker}
+                                            </span>
+                                            <div
+                                                className={`px-4 py-2 rounded-2xl text-sm leading-relaxed ${msg.speaker === 'Caller'
+                                                        ? 'bg-blue-600 text-white rounded-br-none'
+                                                        : 'bg-slate-700 text-slate-200 rounded-bl-none'
+                                                    }`}
+                                            >
+                                                {msg.text}
+                                            </div>
+                                        </div>
+                                    ))}
                             </div>
                             <div className="p-4 border-t border-slate-700 bg-slate-800/30 flex justify-end">
                                 <button
