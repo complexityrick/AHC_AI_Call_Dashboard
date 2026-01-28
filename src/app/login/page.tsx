@@ -10,13 +10,19 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
+    const [error, setError] = useState('');
+
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        // Mock login - in production use NextAuth
-        if (username && password) {
+        setError('');
+
+        // Basic hardcoded auth
+        if (username === 'admin' && password === '2005@prince') {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('user', username);
             router.push('/dashboard');
+        } else {
+            setError('Invalid credentials');
         }
     };
 
@@ -40,6 +46,11 @@ export default function LoginPage() {
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
+                    {error && (
+                        <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm text-center">
+                            {error}
+                        </div>
+                    )}
                     <div>
                         <label className="block text-xs font-medium text-slate-400 mb-1 uppercase tracking-wider">Username</label>
                         <input
