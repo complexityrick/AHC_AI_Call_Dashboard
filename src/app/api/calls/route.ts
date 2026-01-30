@@ -11,10 +11,10 @@ export async function GET(req: Request) {
         // Basic search filtering
         const whereClause = search ? {
             OR: [
-                { callerName: { contains: search } },
-                { phoneNumber: { contains: search } },
-                { callIntent: { contains: search } },
-                { callerType: { contains: search } },
+                { callerName: { contains: search, mode: 'insensitive' } },
+                { phoneNumber: { contains: search, mode: 'insensitive' } },
+                { callIntent: { contains: search, mode: 'insensitive' } },
+                { callerType: { contains: search, mode: 'insensitive' } },
             ]
         } : {};
 
