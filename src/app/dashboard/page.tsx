@@ -9,12 +9,48 @@ export default function DashboardPage() {
     const [isAuthorized, setIsAuthorized] = useState(false);
 
     useEffect(() => {
-        const loggedIn = localStorage.getItem('isLoggedIn');
-        if (!loggedIn) {
-            router.push('/login');
-        } else {
-            setIsAuthorized(true);
-        }
+        const checkAuth = () => {
+            const loggedIn = localStorage.getItem('isLoggedIn');
+            const lastActive = localStorage.getItem('lastActive');
+            const now = Date.now();
+            const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+
+            if (!loggedIn) {
+                router.push('/login');
+                return;
+            }
+
+            if (lastActive && (now - parseInt(lastActive) > TIMEOUT_MS)) {
+                // Expired
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('user');
+                localStorage.removeItem('lastActive');
+                router.push('/login');
+            } else {
+                setIsAuthorized(true);
+            }
+        };
+
+        checkAuth();
+
+        const updateActivity = () => {
+            localStorage.setItem('lastActive', Date.now().toString());
+        };
+
+        // Listen for activity
+        window.addEventListener('mousemove', updateActivity);
+        window.addEventListener('keydown', updateActivity);
+        window.addEventListener('click', updateActivity);
+
+        // Check timeout every minute
+        const interval = setInterval(checkAuth, 60000);
+
+        return () => {
+            window.removeEventListener('mousemove', updateActivity);
+            window.removeEventListener('keydown', updateActivity);
+            window.removeEventListener('click', updateActivity);
+            clearInterval(interval);
+        };
     }, []);
 
     if (!isAuthorized) {

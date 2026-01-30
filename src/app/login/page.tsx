@@ -20,6 +20,7 @@ export default function LoginPage() {
         if (username === 'admin' && password === '2005@prince') {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('user', username);
+            localStorage.setItem('lastActive', Date.now().toString());
             router.push('/dashboard');
         } else {
             setError('Invalid credentials');
