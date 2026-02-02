@@ -11,15 +11,15 @@ export async function GET(req: Request) {
         // Basic search filtering
         const whereClause = search ? {
             OR: [
-                { callerName: { contains: search, mode: 'insensitive' } },
-                { phoneNumber: { contains: search, mode: 'insensitive' } },
-                { callIntent: { contains: search, mode: 'insensitive' } },
-                { callerType: { contains: search, mode: 'insensitive' } },
-                { clinic: { contains: search, mode: 'insensitive' } },
-                { provider: { contains: search, mode: 'insensitive' } },
-                { location: { contains: search, mode: 'insensitive' } },
-                { notes: { contains: search, mode: 'insensitive' } },
-                { transcriptText: { contains: search, mode: 'insensitive' } },
+                { callerName: { contains: search, mode: 'insensitive' as any } },
+                { phoneNumber: { contains: search, mode: 'insensitive' as any } },
+                { callIntent: { contains: search, mode: 'insensitive' as any } },
+                { callerType: { contains: search, mode: 'insensitive' as any } },
+                { clinic: { contains: search, mode: 'insensitive' as any } },
+                { provider: { contains: search, mode: 'insensitive' as any } },
+                { location: { contains: search, mode: 'insensitive' as any } },
+                { notes: { contains: search, mode: 'insensitive' as any } },
+                { transcriptText: { contains: search, mode: 'insensitive' as any } },
             ]
         } : {};
 

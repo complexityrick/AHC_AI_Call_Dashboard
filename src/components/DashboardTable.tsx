@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     DndContext,
     closestCenter,
@@ -30,7 +31,8 @@ import {
     Search,
     ExternalLink,
     MessageSquare,
-    X
+    X,
+    LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
@@ -166,8 +168,8 @@ function TranscriptModal({ isOpen, onClose, text }: { isOpen: boolean; onClose: 
                                         <div
                                             key={idx}
                                             className={`flex flex-col max-w-[80%] ${msg.speaker === 'Caller'
-                                                    ? 'self-end items-end'
-                                                    : 'self-start items-start'
+                                                ? 'self-end items-end'
+                                                : 'self-start items-start'
                                                 }`}
                                         >
                                             <span className="text-[10px] text-slate-500 mb-1 px-1">
@@ -175,8 +177,8 @@ function TranscriptModal({ isOpen, onClose, text }: { isOpen: boolean; onClose: 
                                             </span>
                                             <div
                                                 className={`px-4 py-2 rounded-2xl text-sm leading-relaxed ${msg.speaker === 'Caller'
-                                                        ? 'bg-blue-600 text-white rounded-br-none'
-                                                        : 'bg-slate-700 text-slate-200 rounded-bl-none'
+                                                    ? 'bg-blue-600 text-white rounded-br-none'
+                                                    : 'bg-slate-700 text-slate-200 rounded-bl-none'
                                                     }`}
                                             >
                                                 {msg.text}
@@ -208,10 +210,51 @@ export default function DashboardTable() {
     const [viewTranscriptCall, setViewTranscriptCall] = useState<Call | null>(null);
 
     const [mounted, setMounted] = useState(false);
+    const router = useRouter();
 
+    // Session Management
     useEffect(() => {
-        setMounted(true);
-    }, []);
+        // Check initial login state
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn) {
+            router.push('/login');
+        }
+
+        const handleLogout = () => {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('user');
+            localStorage.removeItem('lastActive');
+            router.push('/login');
+        };
+
+        const updateActivity = () => {
+            localStorage.setItem('lastActive', Date.now().toString());
+        };
+
+        // Activity listeners
+        window.addEventListener('mousemove', updateActivity);
+        window.addEventListener('keydown', updateActivity);
+        window.addEventListener('click', updateActivity);
+
+        // Auto-logout interval (check every minute)
+        const interval = setInterval(() => {
+            const lastActive = parseInt(localStorage.getItem('lastActive') || '0');
+            const now = Date.now();
+            const oneHour = 60 * 60 * 1000;
+
+            if (now - lastActive > oneHour) {
+                handleLogout();
+            }
+        }, 60000); // Check every minute
+
+        return () => {
+            window.removeEventListener('mousemove', updateActivity);
+            window.removeEventListener('keydown', updateActivity);
+            window.removeEventListener('click', updateActivity);
+            clearInterval(interval);
+        };
+    }, [router]);
+
 
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -301,7 +344,21 @@ export default function DashboardTable() {
 
             {/* Controls */}
             <div className="flex justify-between items-center glass-panel p-4 rounded-xl">
-                <h2 className="text-xl font-semibold text-white">Incoming Calls</h2>
+                <div className="flex items-center gap-4">
+                    <h2 className="text-xl font-semibold text-white">Incoming Calls</h2>
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('isLoggedIn');
+                            localStorage.removeItem('user');
+                            localStorage.removeItem('lastActive');
+                            router.push('/login');
+                        }}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-medium transition-colors border border-red-500/20"
+                    >
+                        <LogOut size={14} />
+                        Log Out
+                    </button>
+                </div>
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
                     <input
