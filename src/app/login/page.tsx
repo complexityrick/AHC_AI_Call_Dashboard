@@ -23,7 +23,8 @@ export default function LoginPage() {
             localStorage.setItem('lastActive', Date.now().toString());
             router.push('/dashboard');
         } else {
-            setError('Invalid credentials');
+            console.log('Login attempt:', { username, password });
+            setError(`Invalid credentials. Received: User='${username}', Pass='${password}' (len=${password.length})`);
         }
     };
 
