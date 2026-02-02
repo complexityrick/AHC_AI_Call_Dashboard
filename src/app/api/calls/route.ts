@@ -15,6 +15,11 @@ export async function GET(req: Request) {
                 { phoneNumber: { contains: search, mode: 'insensitive' } },
                 { callIntent: { contains: search, mode: 'insensitive' } },
                 { callerType: { contains: search, mode: 'insensitive' } },
+                { clinic: { contains: search, mode: 'insensitive' } },
+                { provider: { contains: search, mode: 'insensitive' } },
+                { location: { contains: search, mode: 'insensitive' } },
+                { notes: { contains: search, mode: 'insensitive' } },
+                { transcriptText: { contains: search, mode: 'insensitive' } },
             ]
         } : {};
 
