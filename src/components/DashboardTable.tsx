@@ -214,6 +214,8 @@ export default function DashboardTable() {
 
     // Session Management
     useEffect(() => {
+        setMounted(true);
+
         // Check initial login state
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (!isLoggedIn) {
