@@ -17,7 +17,7 @@ export default function LoginPage() {
         setError('');
 
         // Basic hardcoded auth
-        if (username === 'admin' && password === '2005@prince') {
+        if (username === 'admin' && password === 'Prince@2005') {
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('user', username);
             localStorage.setItem('lastActive', Date.now().toString());
