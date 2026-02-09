@@ -404,7 +404,10 @@ export default function DashboardTable() {
                                         {columns.map((col) => {
                                             const val = call[col.id as keyof Call];
                                             return (
-                                                <td key={col.id} className={`px-2 py-4 text-sm ${col.id === 'callIntent' ? 'min-w-[200px] max-w-[400px]' : 'whitespace-nowrap'}`}>
+                                                <td key={col.id} className={`px-2 py-4 text-sm ${col.id === 'callIntent' ? 'min-w-[200px] max-w-[400px]' :
+                                                        col.id === 'transferDestination' ? 'max-w-[150px] whitespace-normal break-words' :
+                                                            'whitespace-nowrap'
+                                                    }`}>
                                                     {renderCell(col.id, val, call, updateCall, setViewTranscriptCall)}
                                                 </td>
                                             );
